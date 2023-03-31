@@ -70,7 +70,7 @@ Data files in test sets have columns (arousal and valence) and timestamps define
 
 To extract the data you can use any software supporting password-protectedzip files. For the Windows operating system, we recommend 7-Zip, and p7zip for Linux / Unix..
 
-For a more visual explanation of how the dataset is constructed and organized, you can see the attached example notebook [explain_data.ipynb](https://github.com/Emognition/EPiC-2023-competition/blob/master/explain_data.ipynb). It shows how to load data, and what the data look like when stored in memory and plotted.
+For a more visual explanation of how the dataset is constructed and organized, you can see the attached example notebook [explain_data.ipynb](https://github.com/Emognition/EPiC-2023-competition/blob/main/explain_data.ipynb). It shows how to load data, and what the data look like when stored in memory and plotted.
 
 
 ## 5. Code of Conduct
