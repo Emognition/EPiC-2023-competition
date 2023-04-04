@@ -35,7 +35,7 @@ Simultaneously, the following physiological signals were sampled at 1kHz:
 
 
 ## 4. Data structure
-All the data is stored in [releases](https://github.com/Emognition/EPiC-2023-competition/releases/latest) section of the repository in password-protected .zip files. (On the Github website, this appears to the right of this Readme text.)
+All the data is stored in [releases](https://github.com/Emognition/EPiC-2023-competition/releases/latest) section of the repository in password-protected .zip files. (On the Github website, this appears to the right of this Readme text.) To extract the data you should be able to use any software supporting password-protected zip files--and we can confirm that we've been able to do so using 7-Zip, WinZip, and p7zip. The password has been emailed to all competitors.
 
 Data are divided into four scenarios, each representing a different validation approach. Every scenario contains a train and test set with physiological measures and ground truth annotations. There is a .csv file per data sample (one subject watching one video) with the filename sub_X_vid_Y.csv where X and Y are the IDs of the participant and video, respectively. We have provided an image that [illustrates the four scenarios](https://github.com/Emognition/EPiC-2023-competition/blob/main/EPiC_Scenarios_ExplainerFigure.png), and more information is below.
 
@@ -67,8 +67,6 @@ For each scenario, there will be both training and test data sets. Teams can fur
 In the test set, the length of the physiology recordings is 20 seconds longer than the length of the self-reported emotion (ground truth). This is to allow people to build models that use time windows of up to 20 seconds long–10 seconds of physiology recordings before and and after the self-reported emotion. Please note, though, that teams can decide what architecture, which physiological signals, which features, what window size, etc. to use.
 
 Data files in test sets have columns (arousal and valence) and timestamps defined. Your task is to predict arousal and valence levels for all of the provided timestamps. You can use the files as a template that you have to fill with predictions produced by your solution.
-
-To extract the data you can use any software supporting password-protected zip files. We recommend 7-Zip (Windows) and p7zip (Linux / Unix).
 
 For a more visual explanation of how the dataset is constructed and organized, you can see the attached example notebook [explain_data.ipynb](https://github.com/Emognition/EPiC-2023-competition/blob/main/explain_data.ipynb). It shows how to load data, and what the data look like when stored in memory and plotted.
 
