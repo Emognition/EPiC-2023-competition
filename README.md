@@ -1,6 +1,6 @@
 # EPiC 2023: The Emotion Physiology and Experience Collaboration
 
-This repository contains data, information, and helpful code for the EPiC 2023 competition.
+This repository contains data, information, and helpful code for the [EPiC 2023 competition](https://epic-collab.github.io/competition/).
 
 ## 1. The goal of the EPiC 2023 competition
 We aim to (1) establish the best approaches for predicting moment-to-moment feelings of valence and arousal from multi-modal measures of physiology, (2) compare how model accuracy scores vary across different validation scenarios, and (3) promote open science.
@@ -37,7 +37,7 @@ Simultaneously, the following physiological signals were sampled at 1kHz:
 ## 4. Data structure
 All the data is stored in [releases](https://github.com/Emognition/EPiC-2023-competition/releases/latest) section of the repository in password-protected .zip files. (On the Github website, this appears to the right of this Readme text.)
 
-Data are divided into four scenarios, each representing a different validation approach. Every scenario contains a train and test set with physiological measures and ground truth annotations. There is a CSV file per data sample (one subject watching one video) with the filename sub_X_vid_Y.csv where X and Y are the IDs of the participant and video, respectively.
+Data are divided into four scenarios, each representing a different validation approach. Every scenario contains a train and test set with physiological measures and ground truth annotations. There is a .csv file per data sample (one subject watching one video) with the filename sub_X_vid_Y.csv where X and Y are the IDs of the participant and video, respectively. We have provided an image that [illustrates the four scenarios](https://github.com/Emognition/EPiC-2023-competition/blob/main/EPiC_Scenarios_ExplainerFigure.png), and more information is below.
 
 1. **Across-time scenario** corresponds to the *hold-out* validation approach that respects chronology. Each sample is divided into training and test parts based on time. A sample represents a single person watching a single video. The earlier parts of the video are in the training set, and the later parts are in the test set.
 
@@ -64,21 +64,24 @@ Data are divided into four scenarios, each representing a different validation a
 ### More information about the data
 For each scenario, there will be both training and test data sets. Teams can further divide the training set (e.g., into training and validation) if they would like.
 
-In the test set, the length of the physiology recordings is 20 seconds longer than the length of the self-reported emotion (ground truth). This is to allow people to build models that use time windows of up to 20 seconds long–10 seconds of physiology recordings before and and after the self-reported emotion. Please note, though, that teams can decide what architecture, which physiological signals, which features, what window size, to use.
+In the test set, the length of the physiology recordings is 20 seconds longer than the length of the self-reported emotion (ground truth). This is to allow people to build models that use time windows of up to 20 seconds long–10 seconds of physiology recordings before and and after the self-reported emotion. Please note, though, that teams can decide what architecture, which physiological signals, which features, what window size, etc. to use.
 
 Data files in test sets have columns (arousal and valence) and timestamps defined. Your task is to predict arousal and valence levels for all of the provided timestamps. You can use the files as a template that you have to fill with predictions produced by your solution.
 
-To extract the data you can use any software supporting password-protectedzip files. For the Windows operating system, we recommend 7-Zip, and p7zip for Linux / Unix..
+To extract the data you can use any software supporting password-protected zip files. We recommend 7-Zip (Windows) and p7zip (Linux / Unix).
 
 For a more visual explanation of how the dataset is constructed and organized, you can see the attached example notebook [explain_data.ipynb](https://github.com/Emognition/EPiC-2023-competition/blob/main/explain_data.ipynb). It shows how to load data, and what the data look like when stored in memory and plotted.
 
 
 ## 5. Code of Conduct
+The rules governing our collaboration are in the [collaboration agreement](https://github.com/Emognition/EPiC-2023-competition/blob/main/EPiC_2023Challenge_CollaborationAgreement.pdf). By participating in the challenge, you are indicating that you agree to abide by the collaboration agreement.
+
+Below is a summary of the basic rules of the competition:
 - You are free to explore various modeling approaches. 
 - You may use pretrained models and/or use other datasets to pretrain your model. If you do so, the datasets/models must be publicly available.
 - You must refrain from dishonest behavior, such as manually tuning the model to overfit on the test data.
 - You retain the intellectual property (IP) rights for your shared/submitted code. However, it must be made openly available and reasonably easy to reproduce.
-- You must be willing to serve as a co-author on a paper describing the challenge results
+- You must be willing to serve as a co-author on a paper describing the challenge results.
 
 
 ## 6. Submission Instructions
