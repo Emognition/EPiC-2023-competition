@@ -3,7 +3,7 @@
 This repository contains data, information, and helpful code for the [EPiC 2023 competition](https://epic-collab.github.io/competition/).
 
 ## 1. The goal of the EPiC 2023 competition
-We aim to (1) establish the best approaches for predicting moment-to-moment feelings of valence and arousal from multi-modal measures of physiology, (2) compare how model accuracy scores vary across different validation scenarios, and (3) promote open science.
+We are piloting a shared task that aims to (1) establish the best approaches for predicting moment-to-moment feelings of valence and arousal from multi-modal measures of physiology, (2) compare how model accuracy scores vary across different validation scenarios, and (3) promote open science.
 
 
 ## 2. Your task
@@ -81,8 +81,20 @@ Below is a summary of the basic rules of the competition:
 - You retain the intellectual property (IP) rights for your shared/submitted code. However, it must be made openly available and reasonably easy to reproduce.
 - You must be willing to serve as a co-author on a paper describing the challenge results.
 
+## 6. (Optional) Validation on subset of test data
+As mentioned in Section 4 of this ReadMe, teams can divide their training set (e.g., into training and validation) if they would like. Nonetheless, many teams have asked if they can use a subset of the (hidden) test data to validate their models. Although we plan to keep the test data hidden until the conclusion of the challenge, teams can optionally send us up to three solutions to validate on a subset of the test data.
 
-## 6. Submission Instructions
+If you send us three solutions to validate on a subset of the test data, one of these solutions must be in the final submission repository. If you send us two or less solutions to validate on a subset of the test data, you may include a different solution in your final repository.
+
+At the end of every business day (PST), we will perform a validation procedure on 50% of the test set and email you back the performance score. Instructions for submitting are below.
+
+- Have the team leader send an email titled “EPiC23_[Team_name]_[Attempt_#]” to both stanislaw.saganowski@pwr.edu.pl and bartosz.perz@pwr.edu.pl 
+- In this email, you can attach your results files with predictions. Alternatively, you can provide us a link to where these files are uploaded.
+- Predictions should be in a zipped file with the same name as the email (e.g., EPiC23_Emognition_Attempt_1.zip). 
+- The zipped file should be structured in the same way as final submissions, which are described in Section 7 of this ReadMe.
+- Please do not password protect the file.
+
+## 7. Final Submission Instructions
 - Create a **Github repository** that includes the following:
 
 	- **Your code with your solution.** Please ensure that your code is clean, well commented, and easy to reproduce. Make it in a way you would like to find when using someone else’s code.
@@ -100,5 +112,12 @@ Below is a summary of the basic rules of the competition:
 
 - We will review all the repositories and replicate the top 3 submissions. If in doubt, we may contact the teams and request more information (e.g., model weights).
 
-## 7. Concluding remark
+## 8. ACII workshop paper submission
+April 28th is the deadline for both (a) completing the challenge and (b) submitting short papers to the 2023 Affective Computing + Intelligence Interaction Conference workshop. 
+
+**If you plan on submitting a short paper, you will have to submit your Final Submission early: by end-of-day April 26**. We will then email you your results on April 27, giving you one day to add the information and submit the final paper.
+
+Conference paper submission and formatting guidelines can be found [here](https://acii-conf.net/2023/wp-content/uploads/2023/03/2023-ACII-Submission-Guidelines.pdf).
+
+## 9. Concluding remarks
 Thank you for participating in our challenge. Now, go off and be EPiC!
