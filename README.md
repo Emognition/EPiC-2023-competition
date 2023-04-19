@@ -88,7 +88,7 @@ If you send us three solutions to validate on a subset of the test data, one of 
 
 At the end of every business day (PST), we will perform a validation procedure on 50% of the test set and email you back the performance score. Instructions for submitting are below.
 
-- Have the team leader send an email titled “EPiC23_[Team_name]_[Attempt_#]” to both stanislaw.saganowski@pwr.edu.pl and bartosz.perz@pwr.edu.pl 
+- Have the team leader send an email titled “EPiC23_[Team_name]_[Attempt_#]” to both ncoles@stanford.edu and stanislaw.saganowski@pwr.edu.pl
 - In this email, you can attach your results files with predictions. Alternatively, you can provide us a link to where these files are uploaded.
 - Predictions should be in a zipped file with the same name as the email (e.g., EPiC23_Emognition_Attempt_1.zip). 
 - The zipped file should be structured in the same way as final submissions, which are described in Section 7 of this ReadMe.
@@ -106,11 +106,15 @@ At the end of every business day (PST), we will perform a validation procedure o
 	- **A short readme** introducing the team, explaining your approach, and describing the repository content and how to run the code. 
 	- You can create a public repository, or send us an invitation to the private one. You should use a [CC-BY license](https://creativecommons.org/licenses/by/4.0/).
 
+- Email both both ncoles@stanford.edu and stanislaw.saganowski@pwr.edu.pl to let them know the repository is ready. 
+
 - Repositories will be cloned on **1 May 2023 10 am PT** into a single meta-repository with one branch per team. This meta-repository will be made publicly available.
 
 - We will utilize the RMSE metric to assess the model performance. The final result will be obtained by calculating the mean score on all scenarios and dimensions (valence and arousal). The performance in each scenario will be assessed by mean RMSE in each fold.
 
 - We will review all the repositories and replicate the top 3 submissions. If in doubt, we may contact the teams and request more information (e.g., model weights).
+
+- At the end of the challenge, we will reveal all the details of the dataset.
 
 ## 8. ACII workshop paper submission
 April 28th is the deadline for both (a) completing the challenge and (b) submitting short papers to the 2023 Affective Computing + Intelligence Interaction Conference workshop. 
