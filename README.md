@@ -89,8 +89,8 @@ If you send us three solutions to validate on a subset of the test data, one of 
 At the end of every business day (PST), we will perform a validation procedure on 50% of the test set and email you back the performance score. Instructions for submitting are below.
 
 - Have the team leader send an email titled “EPiC23\_[Team\_name]\_[Attempt\_#]” to both ncoles@stanford.edu and stanislaw.saganowski@pwr.edu.pl
-- In this email, you can attach your results files with predictions. Alternatively, you can provide us a link to where these files are uploaded.
-- Predictions should be in a zipped file with the same name as the email (e.g., EPiC23\_Emognition\_Attempt\_1.zip). 
+- In this email, you can provide us a link to where these files are uploaded. You can also try to attach your results files with predictions, but please note that many email clients will reject emails with large file attachments.
+- Predictions should be in a zipped file with the same name as the email (e.g., EPiC23\_Emognition\_Attempt\_1.zip). Predictions for all subjects in all scenarios have to provided in order for the submission to be scored.
 - The zipped file should be structured in the same way as final submissions, which are described in Section 7 of this ReadMe.
 - Please do not password protect the file.
 
