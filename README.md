@@ -117,11 +117,13 @@ At the end of every business day (PST), we will perform a validation procedure o
 - At the end of the challenge, we will reveal all the details of the dataset.
 
 ## 8. ACII workshop paper submission
-April 28th is the deadline for both (a) completing the challenge and (b) submitting short papers to the 2023 Affective Computing + Intelligence Interaction Conference workshop. 
-
-**If you plan on submitting a short paper, you will have to submit your Final Submission early: by end-of-day April 26**. We will then email you your results on April 27, giving you one day to add the information and submit the final paper.
+May 12th is the (extended) deadline for submitting short papers to the 2023 Affective Computing + Intelligence Interaction Conference workshop. 
 
 Conference paper submission and formatting guidelines can be found [here](https://acii-conf.net/2023/wp-content/uploads/2023/03/2023-ACII-Submission-Guidelines.pdf).
 
 ## 9. Concluding remarks
 Thank you for participating in our challenge. Now, go off and be EPiC!
+
+## 10. Post-competition updates (last updated May 2)
+- We used the [Continuously Annotated Signals of Emotion (CASE) dataset](https://www.nature.com/articles/s41597-019-0209-0) for this challenge.
+- The test data has been added to the releases tab
