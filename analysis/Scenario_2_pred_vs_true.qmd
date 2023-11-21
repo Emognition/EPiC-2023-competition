@@ -1,0 +1,507 @@
+---
+title: "Scenario 2: Predictions vs True"
+format: html
+---
+
+
+```{r}
+
+# load libraries
+library(readr)
+library(skimr)
+library(rjson)
+library(tidyverse)
+
+
+```
+
+
+## LOAD DATA
+
+This is only fold_0; contains: input features, predicted and true y values.
+
+```{r}
+
+# LOAD DATA (partial)
+
+# subjects and video list
+subjects <- c(3, 12, 14, 19, 23, 44)
+videos <- c(0, 2, 9, 10, 11, 13, 14, 20)
+
+# set paths
+path_true <- "fold_0/annotations/"
+path_input <- "fold_0/physiology/"
+path_pred <- "fold_0/preds/"
+
+# initialise empty df
+df_true <- data.frame()
+df_pred <- data.frame()
+df_input <- data.frame()
+
+# Loop over the first 5 subjects and first 5 videos
+for (sub in subjects) {
+  for (vid in videos) {
+    
+    # Create the file name for the current subject and video
+    file_name <- paste0("sub_", sub, "_vid_", vid, ".csv")
+    
+    # Load the data from the current file
+    data_true <- read.csv(paste0(path_true, file_name))
+    data_input <- read.csv(paste0(path_input, file_name))
+    data_pred <- read.csv(paste0(path_pred, file_name))
+    
+    # Add columns for subject and video
+    data_true$subject <- sub
+    data_true$video <- vid
+    
+    data_input$subject <- sub
+    data_input$video <- vid
+    
+    data_pred$subject <- sub
+    data_pred$video <- vid
+    
+    # Append the data to the results data frame
+    df_true <- rbind(df_true, data_true)
+    df_pred <- rbind(df_pred, data_pred)
+    df_input <- rbind(df_input, data_input)
+    
+  }
+}
+
+
+```
+
+## CONVERT DATA TO ORIGINAL IDs + VIDEO LABELS
+
+The subject and video numbers that were used in the competition is referred to as `data_sub_num` / `data_vid_num` and the original subject and video numbers are referred to as `real_sub_num` / `real_vid_num`.
+
+
+```{r}
+
+# load mapping json file
+mapping <- fromJSON(file = "original_to_changed_ids_map.json")
+labels <- fromJSON(file = "original_stimuli_labels.json")
+
+```
+
+
+```{r}
+
+# extract scenario 2 mappings for videos and subjects
+video_mapping <- as.data.frame(mapping$scenario_2) %>%
+  select(starts_with('videos')) %>%
+  pivot_longer(cols = everything(), 
+               names_to = 'og_vid', 
+               names_prefix = "videos.", # ignores prefix
+               values_to = 'video')
+
+video_mapping$og_vid <- factor(video_mapping$og_vid, levels = c(1:8),
+                             labels = c("amusing-1",
+                                        "amusing-2",
+                                        "boring-1",
+                                        "boring-2",
+                                        "relaxing-1",
+                                        "relaxing-2",
+                                        "scary-1",
+                                        "scary-2"))
+
+subject_mapping <- as.data.frame(mapping$scenario_2) %>%
+  select(starts_with('subjects')) %>%
+  pivot_longer(cols = everything(), 
+               names_to = 'og_sub', 
+               names_prefix = "subjects.", 
+               values_to = 'subject')
+
+
+```
+
+```{r}
+
+df_pred_og_ID <- merge(merge(df_pred, video_mapping, by = "video"), 
+                       subject_mapping, by = "subject")
+
+df_true_og_ID <- merge(merge(df_true, video_mapping, by = "video"), 
+                       subject_mapping, by = "subject")
+
+df_input_og_ID <- merge(merge(df_input, video_mapping, by = "video"), 
+                       subject_mapping, by = "subject")
+ 
+
+```
+
+
+## COMPARING PREDICTED VS TRUE
+
+```{r}
+
+df_y <- merge(df_true_og_ID, df_pred_og_ID, by=c("og_sub", "og_vid", "time"))
+df_y <- df_y %>%
+  rename("valence_true" = "valence.x",
+         "valence_pred" = "valence.y",
+         "arousal_true" = "arousal.x",
+         "arousal_pred" = "arousal.y")
+
+# df_y$og_vid <- factor(df_y$og_vid, levels = c(1:8),
+#                              labels = c("amusing-1",
+#                                         "amusing-2",
+#                                         "boring-1",
+#                                         "boring-2",
+#                                         "relaxing-1",
+#                                         "relaxing-2",
+#                                         "scary-1",
+#                                         "scary-2"))
+
+```
+
+
+
+
+## CORRELATIONS BETWEEN ACTUAL AND PREDICTED RATINGS, PER VIDEO
+
+```{r}
+
+cor_df <- df_y %>%
+  group_by(og_vid, og_sub) %>%
+  summarise(cor_valence = cor(valence_true, valence_pred),
+            cor_arousal = cor(arousal_true, arousal_pred))
+  
+cor_df_long <- cor_df %>% pivot_longer(cols = c(cor_valence, cor_arousal),
+                        names_to = "cor") 
+
+# cor_df_long$og_vid <- factor(cor_df_long$og_vid, levels = c(1:8),
+#                              labels = c("amusing-1",
+#                                         "amusing-2",
+#                                         "boring-1",
+#                                         "boring-2",
+#                                         "relaxing-1",
+#                                         "relaxing-2",
+#                                         "scary-1",
+#                                         "scary-2"))
+
+cor_df_long %>%
+  ggplot(aes(x=cor, y=value, fill=cor)) +
+  geom_violin(alpha=0.8) +
+  geom_jitter(width=0.2, alpha=0.5) +
+  geom_hline(yintercept = 0, linetype=2) +
+  facet_wrap(~og_vid) +
+  labs(title="Correlations between predicted vs actual per video")
+  
+
+```
+
+```{r}
+
+df_y %>% ggplot(aes(x=valence_true, y=valence_pred)) +
+  geom_jitter(width=0.2, color="#619CFF", alpha=0.2) + 
+  geom_smooth(method="lm", color="darkblue") +
+  geom_abline(intercept = 0, slope = 1, alpha=0.2, linetype=2) +
+  xlim(0,10) + ylim(0,10) +
+  facet_wrap(~og_vid) +
+  ggtitle("Predicted vs Actual Valence (Fold_0)")
+
+```
+
+```{r}
+
+df_y %>% ggplot(aes(x=arousal_true, y=arousal_pred)) +
+  geom_jitter(width=0.2, color="#F8766D", alpha=0.2) + 
+  geom_smooth(method="lm", color="red") +
+  geom_abline(intercept = 0, slope = 1, alpha=0.2, linetype=2) +
+  xlim(0,10) + ylim(0,10) +
+  facet_wrap(~og_vid) +
+  ggtitle("Predicted vs Actual Arouasl (Fold_0)")
+
+```
+```{r}
+
+df_y %>% ggplot(aes(x=time, y=arousal_pred)) +
+  geom_point(size=0.2, color="#F8766D", alpha=0.2) + 
+  geom_point(aes(x=time, y=arousal_true), size=0.1, alpha=0.1) +
+  ylim(0,10) +
+  facet_wrap(~og_vid)+
+  ggtitle("Predicted vs Actual Arouasl over time (Fold_0)")
+
+```
+
+```{r}
+
+df_y %>% ggplot(aes(x=time, y=valence_pred)) +
+  geom_point(size=0.2, color="#619CFF", alpha=0.2) + 
+  geom_point(aes(x=time, y=valence_true), size=0.1, alpha=0.1) +
+  ylim(0,10) +
+  facet_wrap(~og_vid)+
+  ggtitle("Predicted vs Actual Valence over time (Fold_0)")
+
+```
+
+```{r}
+
+df_y %>% pivot_longer(cols=c("valence_pred", "arousal_pred"),
+                      names_to="affect",
+                      values_to = "value") %>%
+  ggplot(aes(x=affect, y=value, fill=affect)) +
+  geom_violin() + geom_hline(yintercept = 5, linetype=2) +
+  facet_wrap(~og_vid) +
+  ggtitle("Predicted Valence and Arousal per video (Fold_0)")
+
+```
+
+```{r}
+
+df_y %>% pivot_longer(cols=c("valence_true", "arousal_true"),
+                      names_to="affect",
+                      values_to = "value") %>%
+  ggplot(aes(x=affect, y=value, fill=og_vid)) +
+  geom_violin() + geom_hline(yintercept = 5, linetype=2) +
+  facet_wrap(~og_vid) +
+  ggtitle("Actual Valence and Arousal per video (Fold_0)")
+
+```
+
+# PHYSIOLOGY MEASURES
+
+## ECG
+
+```{r}
+
+df_input_og_ID %>% 
+  filter(time < 40001 & time > 9999) %>%
+  ggplot(aes(x=time, y=ecg, color=og_vid)) +
+  geom_point(size=0.2, alpha=0.2) +
+  facet_wrap(~og_vid)
+
+```
+
+
+```{r}
+
+df_input_og_ID %>% 
+  filter(time < 40001 & time > 9999) %>%
+  ggplot(aes(x=og_vid, y=ecg, fill=og_vid)) +
+  geom_violin() +
+  ggtitle("ECG measures across videos, averaged over subjects")
+
+```
+
+```{r}
+
+df_input_og_ID %>% 
+  filter(time < 40001 & time > 9999 & subject < 20) %>%
+  ggplot(aes(x=og_sub, y=ecg, fill=og_vid)) +
+  geom_violin() +
+  facet_wrap(~og_vid) +
+  ggtitle("Random subset of participants: ECG measures on different videos")
+
+```
+## GSR
+
+```{r}
+
+df_input_og_ID %>% 
+  filter(time < 40001 & time > 9999 & subject < 20) %>%
+  ggplot(aes(x=og_sub, y=gsr, fill=og_vid)) +
+  geom_violin() +
+  facet_wrap(~og_vid) +
+  ggtitle("Random subset of participants: GSR measures on different videos")
+
+```
+
+```{r}
+
+df_input_og_ID %>% 
+  filter(time < 40001 & time > 9999) %>%
+  ggplot(aes(x=og_vid, y=gsr, fill=og_vid)) +
+  geom_violin() +
+  ggtitle("GSR measures across videos, averaged over subjects")
+
+```
+
+
+
+```{r}
+
+df_input_og_ID %>% 
+  filter(time < 40001 & time > 9999) %>%
+  ggplot(aes(x=time, y=gsr, color=og_vid)) +
+  geom_point(size=0.2, alpha=0.2) +
+  facet_wrap(~og_vid)
+
+```
+
+## BVP
+
+```{r}
+
+df_input_og_ID %>% 
+  filter(time < 40001 & time > 9999 & subject < 20) %>%
+  ggplot(aes(x=og_sub, y=bvp, fill=og_vid)) +
+  geom_violin() +
+  facet_wrap(~og_vid) +
+  ggtitle("Random subset of participants: BVP measures on different videos")
+
+```
+
+
+```{r}
+
+df_input_og_ID %>% 
+  filter(time < 40001 & time > 9999) %>%
+  ggplot(aes(x=og_vid, y=bvp, fill=og_vid)) +
+  geom_violin() +
+  ggtitle("BVP measures across videos, averaged over subjects")
+
+```
+
+
+## EMG - muscle movements
+
+```{r}
+
+df_input_og_ID %>% 
+  filter(time < 40001 & time > 9999) %>%
+  ggplot(aes(x=og_vid, y=emg_zygo, fill=og_vid)) +
+  geom_violin() +
+  ggtitle("EMG-zygo measures across videos, averaged over subjects")
+
+
+df_input_og_ID %>% 
+  filter(time < 40001 & time > 9999 & subject < 20) %>%
+  ggplot(aes(x=og_sub, y=emg_zygo, fill=og_vid)) +
+  geom_violin() +
+  facet_wrap(~og_vid) +
+  ggtitle("Random subset of participants: EMG-zygo measures on different videos")
+
+```
+
+
+```{r}
+
+df_input_og_ID %>% 
+  filter(time < 40001 & time > 9999) %>%
+  ggplot(aes(x=og_vid, y=emg_coru, fill=og_vid)) +
+  geom_violin() +
+  ggtitle("EMG-coru measures across videos, averaged over subjects")
+
+
+df_input_og_ID %>% 
+  filter(time < 40001 & time > 9999 & subject < 20) %>%
+  ggplot(aes(x=og_sub, y=emg_coru, fill=og_vid)) +
+  geom_violin() +
+  facet_wrap(~og_vid) +
+  ggtitle("Random subset of participants: EMG-coru measures on different videos")
+
+```
+
+
+```{r}
+
+df_input_og_ID %>% 
+  filter(time < 40001 & time > 9999) %>%
+  ggplot(aes(x=og_vid, y=emg_trap, fill=og_vid)) +
+  geom_violin() +
+  ggtitle("EMG-trap measures across videos, averaged over subjects")
+
+
+df_input_og_ID %>% 
+  filter(time < 40001 & time > 9999 & subject < 20) %>%
+  ggplot(aes(x=og_sub, y=emg_trap, fill=og_vid)) +
+  geom_violin() +
+  facet_wrap(~og_vid) +
+  ggtitle("Random subset of participants: EMG-trap measures on different videos")
+
+```
+
+```{r}
+
+df_input_og_ID %>% 
+  filter(time < 40001 & time > 9999) %>%
+  ggplot(aes(x=og_vid, y=rsp, fill=og_vid)) +
+  geom_violin() +
+  ggtitle("RSP measures across videos, averaged over subjects")
+
+
+df_input_og_ID %>% 
+  filter(time < 40001 & time > 9999 & subject < 20) %>%
+  ggplot(aes(x=og_sub, y=rsp, fill=og_vid)) +
+  geom_violin() +
+  facet_wrap(~og_vid) +
+  ggtitle("Random subset of participants: RSP measures on different videos")
+
+```
+
+
+```{r}
+
+df_input_og_ID %>% 
+  filter(time < 40001 & time > 9999) %>%
+  ggplot(aes(x=og_vid, y=skt, fill=og_vid)) +
+  geom_violin() +
+  ggtitle("SKT measures across videos, averaged over subjects")
+
+
+df_input_og_ID %>% 
+  filter(time < 40001 & time > 9999 & subject < 20) %>%
+  ggplot(aes(x=og_sub, y=skt, fill=og_vid)) +
+  geom_violin() +
+  facet_wrap(~og_vid) +
+  ggtitle("Random subset of participants: SKT measures on different videos")
+
+```
+
+
+```{r}
+
+measures <- c("ecg", "bvp", "gsr", "rsp", "skt", "emg_zygo", "emg_coru", "emg_trap")
+# measures <- c("ecg")
+
+for (measure in measures){
+  subset <- df_input_og_ID %>%
+    filter(time < 40001 & time > 9999 & time %% 50 == 0) %>%
+    select(time, og_vid, og_sub, measure)
+  
+  d_plot <- merge(subset, df_true_og_ID, by=c("og_vid", "og_sub", "time"))
+  
+  p <- d_plot %>% ggplot(aes(x=valence, y=!!sym(measure))) +
+    geom_jitter(width=0.1, color="blue", alpha=0.1) +
+    geom_jitter(aes(x=arousal, y=!!sym(measure)), width=0.1, color="red", alpha=0.1) +
+    facet_wrap(~og_vid) +
+    ggtitle(paste0(measure, " & valence + arousal true"))
+  
+  print(p)
+  
+  # p <-  plot(d_plot$valence, d_plot[, measure],
+  #            col="#619CFF",
+  #            main=paste0(measure, " + Valence True"),
+  #            ylab=paste0(measure),
+  #            xlab="Valence") + facet_wrap(~og_vid)
+  # print(p)
+}
+
+
+```
+
+
+```{r}
+
+# Linear Regression of Physiological Ratings predicting Valence and Arousal
+# without centering
+df_lm_data <- merge(df_input_og_ID, df_true_og_ID, by=c("og_sub", "og_vid", "time"), na.rm=TRUE)
+
+m_arousal <- lm(arousal ~ ecg + bvp + gsr + rsp + skt + emg_zygo + emg_coru + emg_trap, data=df_lm_data)
+summary(m_arousal)
+
+print(sqrt(mean(m_arousal$residuals^2)))
+
+m_valence <- lm(valence ~ ecg + bvp + gsr + rsp + skt + emg_zygo + emg_coru + emg_trap, data=df_lm_data)
+summary(m_valence)
+
+print(sqrt(mean(m_valence$residuals^2)))
+
+
+```
+
+
+
+
+
+
