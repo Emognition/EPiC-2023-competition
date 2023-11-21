@@ -1,0 +1,9 @@
+pandas
+numpy
+matplotlib
+seaborn
+neurokit2
+more_itertools
+autogluon[lightgbm]==0.7.0
+torch
+pytorch-lightning
