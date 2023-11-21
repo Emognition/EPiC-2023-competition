@@ -1,1 +1,0 @@
-# EPIC-2023-competition

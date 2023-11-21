@@ -1,0 +1,38 @@
+# General
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pyc
+*.log
+*.png
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+
+# Virtual environments
+venv/
+*.venv/
+env/
+*.env/
+
+# Spyder project settings
+.spyderproject
+.spyproject
+
+# PyCharm project settings
+.idea/
+
+# Data
+#data/
+# *.csv
+*.tsv
+*.xlsx
+*.hdf5
+*.sqlite
+
+# Data
+data/
+
+
+
