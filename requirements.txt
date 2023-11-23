@@ -1,0 +1,8 @@
+neurokit2
+joblib
+glob
+scikit-learn
+pandas
+numpy
+matplotlib
+os
