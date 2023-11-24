@@ -124,6 +124,11 @@ Conference paper submission and formatting guidelines can be found [here](https:
 ## 9. Concluding remarks
 Thank you for participating in our challenge. Now, go off and be EPiC!
 
-## 10. Post-competition updates (last updated May 2)
+## 10. Post-competition updates
+
+November 24
+- Participants' repositories have been added to this repository, and can be found in the team-specific branches.
+
+May 2
 - We used the [Continuously Annotated Signals of Emotion (CASE) dataset](https://www.nature.com/articles/s41597-019-0209-0) for this challenge.
 - The test data has been added to the releases tab
